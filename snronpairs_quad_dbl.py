@@ -22,8 +22,8 @@ def getsnr_forpairs(det):
    dbmg21=[]; dbtd21=[] 
 
    for ii in range(lid.size):
-       indx =  (qdid == np.int(lid[ii])) & (srcqid==np.int(imid[ii])) 
-       indx1 = (dbid == np.int(lid[ii])) & (srcdid==np.int(imid[ii])) 
+       indx =  (qdid == np.int64(lid[ii])) & (srcqid==np.int64(imid[ii])) 
+       indx1 = (dbid == np.int64(lid[ii])) & (srcdid==np.int64(imid[ii])) 
        if(np.sum(indx)==0):
            mgnw=dbmag[indx1]
            tdnw=dbtdel[indx1]
@@ -35,7 +35,7 @@ def getsnr_forpairs(det):
                dbmg21.append(-dbmag2/dbmag1)
                dbtd21.append(dbtdel2) 
            except IndexError:
-               print(ii, np.int(lid[ii]))
+               print(ii, np.int64(lid[ii]))
            
        else:
 
