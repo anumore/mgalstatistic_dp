@@ -35,36 +35,12 @@ def return_hemanta_data_same_type_images():
     '''
     day = 24*3600 # Days in seconds
     # Extract the magnification and time delay distribution for O3 for Hemanta's catalog - quads only with first 2 or last 2 images detectable
-    parameters = read_hemanta_data(filename="./Hemanta_data/O3b plots/detectable_4_image_type_1/lensed_params_detectable.json")
-    weights1 = np.array(parameters['weights'])
-    magnifications1 = np.array(parameters['magnifications'])
-    time_delays1 = np.array(parameters['time_delays'])
-    mu1_1 = magnifications1[:,0]; mu1_2 = magnifications1[:,1]; mu1_3 = magnifications1[:,2]; mu1_4 = magnifications1[:,3]
-    td1_1_seconds = time_delays1[:,0]; td1_2_seconds = time_delays1[:,1]; td1_3_seconds = time_delays1[:,2]; td1_4_seconds = time_delays1[:,3]
-    td1_1 = td1_1_seconds/day; td1_2 = td1_2_seconds/day; td1_3 = td1_3_seconds/day; td1_4 = td1_4_seconds/day # Convert to days
-    dmu1_12 = abs(mu1_2/mu1_1)
-    time_delay_difference1_12 = td1_2 - td1_1
-    # Now for the last 2 images (type 2)
-    parameters = read_hemanta_data(filename="./Hemanta_data/O3b plots/detectable_4_image_type_2/lensed_params_detectable.json")
-    weights2 = np.array(parameters['weights'])
-    magnifications2 = np.array(parameters['magnifications'])
-    time_delays2 = np.array(parameters['time_delays'])
-    mu2_1 = magnifications2[:,0]; mu2_2 = magnifications2[:,1]; mu2_3 = magnifications2[:,2]; mu2_4 = magnifications2[:,3]
-    td2_1_seconds = time_delays2[:,0]; td2_2_seconds = time_delays2[:,1]; td2_3_seconds = time_delays2[:,2]; td2_4_seconds = time_delays2[:,3]
-    td2_1 = td2_1_seconds/day; td2_2 = td2_2_seconds/day; td2_3 = td2_3_seconds/day; td2_4 = td2_4_seconds/day # Convert to days
-    dmu2_34 = abs(mu2_4/mu2_3)
-    time_delay_difference2_34 = td2_4 - td2_3
-    mag = np.concatenate((dmu1_12, dmu2_34))
-    tdel = np.concatenate((time_delay_difference1_12, time_delay_difference2_34))
-    weights = np.concatenate((weights1, weights2))
-    idx = (tdel>1e-3) & (mag>5e-2)
-    # # Now resample the data with 10^5 samples so they all have equal weights
-    # idx_resample = np.random.choice(np.arange(len(mag)), size=100000, replace=True, p=weights/np.sum(weights))
-    # mag = mag[idx_resample]
-    # tdel = tdel[idx_resample]
-    # weights = weights[idx_resample]
-    # idx = idx[idx_resample]
-    return mag,tdel,idx
+    param = read_hemanta_data(filename="./Hemanta_data/O3b plots/phase_diff_0.json")
+    mag = np.array(param['dmu'])
+    tdel = np.array(param['dt']) # in days
+    
+    return mag,tdel
+
 def return_hemanta_data_different_type_images():
     ''' return Hemanta's data for different type images (type-I type-II)
 
@@ -74,51 +50,14 @@ def return_hemanta_data_different_type_images():
     Note:
         * The mag is defined to be the union of both of the magnifications (type-I,type-II; for quads, there are 2 pairs of such images)
     '''
+    
     day = 24*3600 # Days in seconds
     # Extract the magnification and time delay distribution for O3 for Hemanta's catalog - quads only with first 2 or last 2 images detectable
-    parameters = read_hemanta_data(filename="./Hemanta_data/O3b plots/detectable_4_image_type_1/lensed_params_detectable.json")
-    weights1 = np.array(parameters['weights'])
-    magnifications1 = np.array(parameters['magnifications'])
-    time_delays1 = np.array(parameters['time_delays'])
-    mu1_1 = magnifications1[:,0]; mu1_2 = magnifications1[:,1]; mu1_3 = magnifications1[:,2]; mu1_4 = magnifications1[:,3]
-    td1_1_seconds = time_delays1[:,0]; td1_2_seconds = time_delays1[:,1]; td1_3_seconds = time_delays1[:,2]; td1_4_seconds = time_delays1[:,3]
-    td1_1 = td1_1_seconds/day; td1_2 = td1_2_seconds/day; td1_3 = td1_3_seconds/day; td1_4 = td1_4_seconds/day # Convert to days
-    # Type-I, Type-II images can be formed via any combinations of (1,2) and (3,4)
-    dmu1_13 = abs(mu1_3/mu1_1)
-    dmu1_14 = abs(mu1_4/mu1_1)
-    dmu1_23 = abs(mu1_3/mu1_2)
-    dmu1_24 = abs(mu1_4/mu1_2)
-    time_delay_difference1_13 = td1_3 - td1_1
-    time_delay_difference1_14 = td1_4 - td1_1
-    time_delay_difference1_23 = td1_3 - td1_2
-    time_delay_difference1_24 = td1_4 - td1_2
-    # Now for the last 2 images (type 2)
-    parameters = read_hemanta_data(filename="./Hemanta_data/O3b plots/detectable_4_image_type_2/lensed_params_detectable.json")
-    weights2 = np.array(parameters['weights'])
-    magnifications2 = np.array(parameters['magnifications'])
-    time_delays2 = np.array(parameters['time_delays'])
-    mu2_1 = magnifications2[:,0]; mu2_2 = magnifications2[:,1]; mu2_3 = magnifications2[:,2]; mu2_4 = magnifications2[:,3]
-    td2_1_seconds = time_delays2[:,0]; td2_2_seconds = time_delays2[:,1]; td2_3_seconds = time_delays2[:,2]; td2_4_seconds = time_delays2[:,3]
-    td2_1 = td2_1_seconds/day; td2_2 = td2_2_seconds/day; td2_3 = td2_3_seconds/day; td2_4 = td2_4_seconds/day # Convert to days
-    dmu2_13 = abs(mu2_3/mu2_1)
-    dmu2_14 = abs(mu2_4/mu2_1)
-    dmu2_23 = abs(mu2_3/mu2_2)
-    dmu2_24 = abs(mu2_4/mu2_2)
-    time_delay_difference2_13 = td2_3 - td2_1
-    time_delay_difference2_14 = td2_4 - td2_1
-    time_delay_difference2_23 = td2_3 - td2_2
-    time_delay_difference2_24 = td2_4 - td2_2
-    mag = np.concatenate((dmu1_13, dmu1_14, dmu1_23, dmu1_24, dmu2_13, dmu2_14, dmu2_23, dmu2_24))
-    tdel = np.concatenate((time_delay_difference1_13, time_delay_difference1_14, time_delay_difference1_23, time_delay_difference1_24, time_delay_difference2_13, time_delay_difference2_14, time_delay_difference2_23, time_delay_difference2_24))
-    weights = np.concatenate((weights1, weights1, weights1, weights1, weights2, weights2, weights2, weights2))
-    idx = (tdel>1e-3) & (mag>5e-2)
-    # # Now resample the data with 10^5 samples so they all have equal weights
-    # idx_resample = np.random.choice(np.arange(len(mag)), size=100000, replace=True, p=weights/np.sum(weights))
-    # mag = mag[idx_resample]
-    # tdel = tdel[idx_resample]
-    # weights = weights[idx_resample]
-    # idx = idx[idx_resample]
-    return mag,tdel,idx
+    param = read_hemanta_data(filename="./Hemanta_data/O3b plots/phase_diff_90.json")
+    mag = np.array(param['dmu'])
+    tdel = np.array(param['dt']) # in days
+    
+    return mag,tdel
 
 
 
@@ -223,8 +162,8 @@ tdel2=np.concatenate([tdel31,tdel32,tdel41,tdel42,dbtd21])
 idx2=(tdel2>1e-3) & (mag2>5e-2)
 
 # Next we extract the same information as above from Hemanta's catalog 
-mag1_hemanta,tdel1_hemanta,idx1_hemanta = return_hemanta_data_same_type_images()
-mag2_hemanta,tdel2_hemanta,idx2_hemanta = return_hemanta_data_different_type_images()
+mag1_hemanta,tdel1_hemanta = return_hemanta_data_same_type_images()
+mag2_hemanta,tdel2_hemanta = return_hemanta_data_different_type_images()
 
 #### Unlensed pairs
 td_unlensed,amplitude_unlensed=np.loadtxt("unlensedpairs/unlensedpairs_tdmag_%s.txt"%(det),unpack=1) 
