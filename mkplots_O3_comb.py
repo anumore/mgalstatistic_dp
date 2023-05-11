@@ -64,7 +64,7 @@ def return_hemanta_data_different_type_images():
 ## O3 
 det="O3"
 
-fig = plt.figure(figsize=(4,3*2))
+fig = plt.figure(figsize=(4,3.1*2))
 lab=np.array(["O3, $\Delta\phi$=0", "O3, $\Delta\phi$=90"])
 
 
@@ -108,7 +108,7 @@ def makeplot(names,kk,mag_comb, tdel_comb, gwm,gwt,gwmerr,amplitude_unlensed,td_
     
     xxu,yyu,ffu=cf.contfunc(td_unlensed,amplitude_unlensed)
     levels=cf.contlevs(ffu) 
-    cset=ax1.contour(np.rot90(ffu), levels, colors='gray', origin='upper', extent=extent_im)
+    cset=ax1.contour(np.rot90(ffu), levels, colors='orange', alpha=0.6, origin='upper', extent=extent_im)
      
     levels_n=cf.contlevs(ffu, returnfirst=True) 
     #cfset = ax1.contourf(xxu, yyu,  ffu, levels_n,cmap='YlOrBr', alphas=0.1)
@@ -116,16 +116,16 @@ def makeplot(names,kk,mag_comb, tdel_comb, gwm,gwt,gwmerr,amplitude_unlensed,td_
 
    
     if(kk==1):
-        ax1.errorbar(np.log10(gwt),np.log10(gwm),color="lightblue",yerr=gwmerr/gwm/np.log(10.),fmt="o",alpha=0.7) 
+        ax1.errorbar(np.log10(gwt),np.log10(gwm),color="magenta",yerr=gwmerr/gwm/np.log(10.),fmt=".",alpha=0.5) 
         ax1.set_ylabel("Log (Relative magnification)")
         for i, txt in enumerate(names):
-            ax1.annotate(gwnames_abcd[i], (np.log10(gwt[i]),np.log10(gwm[i])), xytext=(np.log10(gwt[i])+0.1,np.log10(gwm[i])),color="black", fontsize=6)
+            ax1.annotate(gwnames_abcd[i], (np.log10(gwt[i]),np.log10(gwm[i])), xytext=(np.log10(gwt[i])+0.1,np.log10(gwm[i])),color="black", fontsize=8)
     if(kk==2): 
         #ax1.tick_params(left = False, labelleft = False )
-        ax1.errorbar(np.log10(gwt),np.log10(gwm),label="O3-GW Events",color="lightblue",yerr=gwmerr/gwm/np.log(10.),alpha=0.7,fmt="o") 
+        ax1.errorbar(np.log10(gwt),np.log10(gwm),label="O3-GW Events",color="magenta",yerr=gwmerr/gwm/np.log(10.),alpha=0.5,fmt=".") 
         ax1.set_ylabel("Log (Relative magnification)")
         for i, txt in enumerate(names):
-            ax1.annotate(gwnames_abcd[i], (np.log10(gwt[i]),np.log10(gwm[i])), xytext=(np.log10(gwt[i])+0.1,np.log10(gwm[i])),color="black", fontsize=6)
+            ax1.annotate(gwnames_abcd[i], (np.log10(gwt[i]),np.log10(gwm[i])), xytext=(np.log10(gwt[i])+0.1,np.log10(gwm[i])),color="black", fontsize=8)
     # Create a tick annotation label top-left that makes an arrow to the errorbar ticks
     # Adjust texts
     from adjustText import adjust_text
